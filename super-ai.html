@@ -1,0 +1,214 @@
+﻿<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>Super AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Super AI - ذكاء اصطناعي عصري للطلاب">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(120deg, #050505, #0b1a24, #000);
+  background-size: 400% 400%;
+  animation: bgMove 12s ease infinite;
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+  overflow:hidden;
+}
+
+@keyframes bgMove{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+
+/* ضباب */
+.fog{
+  position:fixed;
+  top:0;
+  left:0;
+  width:200%;
+  height:200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 60%);
+  animation: fogMove 20s linear infinite;
+  pointer-events:none;
+  z-index:1;
+}
+@keyframes fogMove{
+  from{transform:translateX(0)}
+  to{transform:translateX(-50%)}
+}
+
+/* شاشة ترحيب */
+#splash{
+  position:fixed;
+  inset:0;
+  background: linear-gradient(120deg, #050505, #0b1a24, #000);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+  animation: splashFade 3s forwards;
+}
+#splash .logo{
+  font-size:36px;
+  color:#00aaff;
+  text-shadow:0 0 25px #00aaff;
+  animation: pulse 1.8s infinite;
+}
+#splash .tagline{
+  margin-top:10px;
+  color:#cfefff;
+}
+@keyframes pulse{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.08)}
+}
+@keyframes splashFade{
+  0%{opacity:1}
+  70%{opacity:1}
+  100%{opacity:0; visibility:hidden}
+}
+
+/* العنوان */
+.header{
+  text-align:center;
+  padding:15px;
+  font-size:22px;
+  color:#00aaff;
+  text-shadow:0 0 12px #00aaff;
+  animation: lightning 4s infinite;
+  z-index:2;
+}
+@keyframes lightning{
+  0%,95%,100%{text-shadow:0 0 10px #00aaff}
+  96%{text-shadow:0 0 25px #4dcfff}
+}
+
+/* الشات */
+.chat-area{
+  flex:1;
+  padding:15px;
+  overflow-y:auto;
+  z-index:2;
+}
+.msg{
+  background:rgba(0,170,255,0.15);
+  padding:10px 14px;
+  border-radius:14px;
+  margin-bottom:10px;
+  max-width:80%;
+  width:fit-content;
+}
+
+/* الإدخال */
+.chat-input{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:rgba(0,0,0,0.6);
+  padding:10px 14px;
+  border-radius:24px;
+  margin:10px;
+  z-index:2;
+}
+.chat-input input{
+  flex:1;
+  background:transparent;
+  border:none;
+  outline:none;
+  color:#fff;
+  font-size:15px;
+}
+.mic-btn,
+.send-btn{
+  background:transparent;
+  border:none;
+  cursor:pointer;
+  color:#00aaff;
+  font-size:18px;
+}
+.mic-btn:hover,
+.send-btn:hover{
+  text-shadow:0 0 10px #00aaff;
+  transform:scale(1.1);
+}
+</style>
+</head>
+
+<body>
+
+<div id="splash">
+  <div class="logo">⚡ Super AI ⚡</div>
+  <div class="tagline">ذكاء اصطناعي عصري</div>
+</div>
+
+<div class="fog"></div>
+
+<div class="header">Super AI</div>
+
+<div class="chat-area" id="chatArea">
+  <div class="msg">👋 أهلاً بيك في Super AI</div>
+</div>
+
+<div class="chat-input">
+  <button class="mic-btn" onclick="playClick()">
+    <i class="fa-solid fa-microphone"></i>
+  </button>
+
+  <input type="text" id="userInput" placeholder="اكتب سؤالك هنا..."
+    onkeydown="if(event.key==='Enter') sendMessage()">
+
+  <button class="send-btn" onclick="sendMessage(); playClick();">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
+</div>
+
+<audio id="clickSound">
+  <source src="data:audio/mp3;base64,//uQZAAAAAAAAAAAAAAAAAAAA" type="audio/mp3">
+</audio>
+
+<script>
+setTimeout(()=>{
+  const s = document.getElementById('splash');
+  if(s) s.style.display='none';
+},3000);
+
+function sendMessage(){
+  const input = document.getElementById("userInput");
+  const text = input.value.trim();
+  if(!text) return;
+
+  const chat = document.getElementById("chatArea");
+
+  const userMsg = document.createElement("div");
+  userMsg.className = "msg";
+  userMsg.style.background="rgba(255,255,255,0.1)";
+  userMsg.textContent = text;
+  chat.appendChild(userMsg);
+
+  const aiMsg = document.createElement("div");
+  aiMsg.className = "msg";
+  aiMsg.textContent = "🤖 Super AI (نسخة أوفلاين)";
+  chat.appendChild(aiMsg);
+
+  input.value="";
+  chat.scrollTop=chat.scrollHeight;
+}
+
+function playClick(){
+  const s=document.getElementById("clickSound");
+  s.currentTime=0;
+  s.play();
+}
+</script>
+
+</body>
+</html>
