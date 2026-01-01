@@ -4,108 +4,181 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Super AI</title>
+
 <style>
-  body {
-    margin:0;
-    font-family: Arial, sans-serif;
-    background: radial-gradient(circle at center, #111 0%, #000 100%);
-    color: #fff;
-    overflow: hidden;
-  }
-  .fog {
-    position:absolute;
-    width:100%;
-    height:100%;
-    background: repeating-linear-gradient(0deg, rgba(255,255,255,0.03), rgba(255,255,255,0.03) 2px, transparent 2px, transparent 5px);
-    z-index:0;
-  }
-  .container {
-    position:relative;
-    z-index:1;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    height:100vh;
-  }
-  .chat-box {
-    width: 90%;
-    max-width: 400px;
-    background:#222;
-    border-radius:15px;
-    padding:15px;
-    display:flex;
-    flex-direction:column;
-  }
-  #messages {
-    flex:1;
-    margin-bottom:10px;
-    height:200px;
-    overflow-y:auto;
-    background:#111;
-    border-radius:10px;
-    padding:10px;
-  }
-  .input-area {
-    display:flex;
-    align-items:center;
-  }
-  #userInput {
-    flex:1;
-    padding:10px;
-    border-radius:15px;
-    border:none;
-  }
-  .btn {
-    margin-left:5px;
-    background:#0af;
-    border:none;
-    color:#fff;
-    border-radius:50%;
-    width:40px;
-    height:40px;
-    cursor:pointer;
-  }
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:#000;
+  color:#fff;
+  height:100vh;
+  overflow:hidden;
+}
+
+/* الضباب */
+.fog{
+  position:fixed;
+  top:0;left:0;
+  width:200%;
+  height:200%;
+  background:radial-gradient(circle,rgba(255,255,255,0.04),transparent 60%);
+  animation:fogMove 30s linear infinite;
+  z-index:0;
+}
+@keyframes fogMove{
+  from{transform:translate(0,0)}
+  to{transform:translate(-50%,-50%)}
+}
+
+/* البرق */
+.lightning{
+  position:fixed;
+  top:0;left:0;
+  width:100%;
+  height:100%;
+  background:linear-gradient(120deg,transparent 40%,rgba(0,170,255,0.15),transparent 60%);
+  animation:flash 6s infinite;
+  z-index:0;
+}
+@keyframes flash{
+  0%,90%,100%{opacity:0}
+  92%{opacity:1}
+}
+
+/* التطبيق */
+.app{
+  position:relative;
+  z-index:1;
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+  max-width:500px;
+  margin:auto;
+}
+
+/* الشات */
+.chat{
+  flex:1;
+  padding:15px;
+  overflow-y:auto;
+}
+.msg{
+  margin-bottom:10px;
+  padding:10px 14px;
+  border-radius:15px;
+  max-width:80%;
+  line-height:1.4;
+}
+.ai{
+  background:#111;
+  border:1px solid #0af;
+}
+.user{
+  background:#0af;
+  color:#000;
+  margin-left:auto;
+}
+
+/* خانة الإدخال */
+.input-box{
+  display:flex;
+  padding:10px;
+  gap:8px;
+}
+input{
+  flex:1;
+  padding:12px;
+  border-radius:20px;
+  border:none;
+  outline:none;
+}
+button{
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  border:none;
+  background:#0af;
+  color:#000;
+  font-size:18px;
+  cursor:pointer;
+}
 </style>
 </head>
+
 <body>
+
 <div class="fog"></div>
-<div class="container">
-  <div class="chat-box">
-    <div id="messages">اهلا! اكتب سؤالك هنا.</div>
-    <div class="input-area">
-      <input type="text" id="userInput" placeholder="اكتب هنا...">
-      <button class="btn" onclick="sendMessage()">⮝</button>
-      <button class="btn" onclick="speak()">🎤</button>
-    </div>
+<div class="lightning"></div>
+
+<div class="app">
+  <div class="chat" id="chat"></div>
+
+  <div class="input-box">
+    <input id="input" placeholder="اكتب سؤالك هنا..." onkeydown="if(event.key==='Enter')send()">
+    <button onclick="send()">➤</button>
+    <button onclick="voice()">🎤</button>
   </div>
 </div>
 
 <script>
-const messages = document.getElementById('messages');
-const input = document.getElementById('userInput');
+const chat=document.getElementById("chat");
+const input=document.getElementById("input");
 
-const responses = {
-  "مميزاتك": "أنا Super AI، شغال بدون نت، مع رقابة أبوية، صوت بفلوس، جدول دراسي مجاني.",
-  "مين عملك": "طالب في تلته اعدادي، 16 سنة، اسمه محمد خالد، ساكن مدينة بدر.",
-  "اهلا":"اهلا! كيف يمكنني مساعدتك؟",
-  "السلام عليكم":"وعليكم السلام!"
-};
-
-function sendMessage(){
-  const userText = input.value.trim();
-  if(!userText) return;
-  messages.innerHTML += `<div style="color:#0af;">انت: ${userText}</div>`;
-  input.value='';
-  let reply = responses[userText];
-  if(!reply) reply="الإجابة لسه منزلتش، محتاج انترنت للنسخة الكاملة.";
-  messages.innerHTML += `<div>AI: ${reply}</div>`;
-  messages.scrollTop = messages.scrollHeight;
+function ai(text){
+  const d=document.createElement("div");
+  d.className="msg ai";
+  d.innerText=text;
+  chat.appendChild(d);
+  chat.scrollTop=chat.scrollHeight;
+}
+function user(text){
+  const d=document.createElement("div");
+  d.className="msg user";
+  d.innerText=text;
+  chat.appendChild(d);
+  chat.scrollTop=chat.scrollHeight;
 }
 
-function speak(){
-  alert("ميزة الصوت متاحة بعد الدفع.");
+/* الترحيب التلقائي */
+setTimeout(()=>{
+  ai("👋 أهلاً بيك في Super AI");
+  setTimeout(()=>ai("أنا مساعد ذكي بشتغل بدون إنترنت في النسخة التجريبية."),800);
+  setTimeout(()=>ai("✨ مميزاتي:\n- مساعد ذكي\n- جدول دراسي\n- رقابة أبوية\n- ميزة الصوت (مدفوعة)"),1600);
+  setTimeout(()=>ai("🌍 اختر اللغة: عربي – English – Italiano"),2400);
+},500);
+
+/* الردود */
+function reply(q){
+  q=q.toLowerCase();
+
+  if(q.includes("اهلا")||q.includes("السلام"))
+    return "أهلاً وسهلاً 👋";
+
+  if(q.includes("مميزاتك"))
+    return "أنا Super AI:\n- بدون نت\n- جدول\n- رقابة أبوية\n- صوت مدفوع";
+
+  if(q.includes("مين عملك"))
+    return "تم تصميمي بواسطة طالب في تالتة إعدادي، 16 سنة، اسمه محمد خالد.";
+
+  if(q.includes("جدول"))
+    return "📅 يمكنك كتابة مواعيدك وسأذكّرك بها.";
+
+  return "الإجابة لسه منزلتش في النسخة التجريبية.";
+}
+
+function send(){
+  const t=input.value.trim();
+  if(!t) return;
+  user(t);
+  input.value="";
+  setTimeout(()=>ai(reply(t)),600);
+}
+
+function voice(){
+  alert("ميزة الصوت متاحة بعد الاشتراك.");
 }
 </script>
+
 </body>
 </html>
