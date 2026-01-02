@@ -4,285 +4,215 @@
 <meta charset="UTF-8">
 <title>Super AI</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
-body{background:black;color:white;overflow:hidden;}
-
-/* ---------- SCREENS ---------- */
-.screen{
-  position:fixed;
-  inset:0;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  transition:opacity 1s;
-}
-.hidden{opacity:0; pointer-events:none;}
-
-/* ---------- LOGO ---------- */
-.logo{
-  width:80px;
-  height:80px;
-  border-radius:50%;
-  background:radial-gradient(circle, #00f, #004);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:40px;
-  font-weight:bold;
-  color:white;
-  animation:grow 3s forwards;
-  box-shadow:0 0 20px blue;
-}
-@keyframes grow{
-  0%{transform:scale(0.2);}
-  100%{transform:scale(2.5);}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{
+  background:#000;
+  color:#fff;
+  overflow:hidden;
 }
 
-.fire{
-  position:absolute;
-  inset:0;
-  background:radial-gradient(circle at bottom, rgba(0,0,255,.2), transparent 60%);
-  animation:fog 5s infinite alternate;
+/* ===== Background ===== */
+.fog{
+  position:fixed;inset:0;
+  background:radial-gradient(circle at center, rgba(255,255,255,.06), black 70%);
+  animation:fog 6s infinite alternate;
 }
-@keyframes fog{
-  from{opacity:.2;} to{opacity:.6;}
-}
+@keyframes fog{from{opacity:.3}to{opacity:.6}}
 
 .lightning{
-  position:absolute;
-  inset:0;
-  background:linear-gradient(120deg, transparent 40%, rgba(0,0,255,.3), transparent 60%);
-  animation:flash 2s infinite;
+  position:fixed;inset:0;
+  background:linear-gradient(120deg,transparent 45%,rgba(0,150,255,.7),transparent 55%);
+  animation:flash 4s infinite;
 }
 @keyframes flash{
-  0%,90%,100%{opacity:0;} 95%{opacity:1;}
+  0%,90%,100%{opacity:0}
+  95%{opacity:1}
+}
+
+/* ===== Screens ===== */
+.screen{
+  position:fixed;inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  transition:opacity 1s;
+}
+.hide{opacity:0;pointer-events:none}
+
+/* ===== Logo ===== */
+.logo{
+  width:120px;height:140px;
+  background:linear-gradient(#0066ff,#001f4d);
+  clip-path:polygon(50% 0%,100% 20%,85% 100%,15% 100%,0% 20%);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:42px;
+  font-weight:bold;
+  animation:grow 3s forwards;
+  box-shadow:0 0 40px #00aaff;
+}
+@keyframes grow{from{transform:scale(.2)}to{transform:scale(1.4)}}
+
+.fire{
+  position:absolute;bottom:0;
+  width:100%;height:40%;
+  background:radial-gradient(circle at bottom, rgba(0,120,255,.6), transparent);
 }
 
 .title{
-  margin-top:80px;
+  margin-top:60px;
   font-size:32px;
   opacity:0;
   animation:show 1s forwards;
   animation-delay:3s;
 }
-@keyframes show{to{opacity:1;}}
+@keyframes show{to{opacity:1}}
 
-/* ---------- SLIDES ---------- */
+/* ===== Slides ===== */
 .slide{
-  text-align:center;
   font-size:22px;
+  text-align:center;
   padding:20px;
 }
-button{
-  margin-top:30px;
-  padding:12px 25px;
-  border:none;
-  border-radius:25px;
-  background:#0066ff;
-  color:white;
-  font-size:16px;
-  cursor:pointer;
-}
-button:hover{background:#0044cc;}
 
-/* ---------- CHAT BOX ---------- */
-#chatContainer{
+/* ===== Chat ===== */
+.chat{
   position:fixed;
-  bottom:10px;
-  right:10px;
-  width:320px;
-  background:#111;
+  bottom:15px;
+  left:50%;
+  transform:translateX(-50%);
+  width:90%;
+  max-width:420px;
+  background:#0d0d0d;
+  border-radius:15px;
   padding:10px;
-  border-radius:10px;
 }
-#chatBox{
-  height:180px;
+.messages{
+  height:220px;
   overflow-y:auto;
-  color:white;
-  margin-bottom:5px;
+  font-size:14px;
 }
-#chatInput{
-  width:200px;
-  padding:5px;
-  border-radius:5px;
-  border:none;
+.inputBox{
+  display:flex;
+  align-items:center;
+  background:#111;
+  border-radius:25px;
+  padding:6px 10px;
+  margin-top:5px;
 }
-#sendBtn,#micBtn{
-  padding:5px 10px;
+.inputBox input{
+  flex:1;
+  background:none;
   border:none;
-  border-radius:5px;
-  background:#0066ff;
   color:white;
+  outline:none;
+}
+.inputBox button{
+  background:none;
+  border:none;
+  color:#0af;
+  font-size:18px;
   cursor:pointer;
 }
-#sendBtn:hover,#micBtn:hover{background:#0044cc;}
 </style>
 </head>
 <body>
 
-<!-- SCREEN 1: LOGO + ANIMATION -->
+<div class="fog"></div>
+<div class="lightning"></div>
+
+<!-- Screens -->
 <div class="screen" id="s1">
-  <div class="fire"></div>
-  <div class="lightning"></div>
-  <div class="logo">SA</div>
+  <div class="logo">SA<div class="fire"></div></div>
   <div class="title">SUPER AI</div>
 </div>
 
-<!-- SCREEN 2: Feature 1 -->
-<div class="screen hidden" id="s2">
+<div class="screen hide" id="s2">
+  <div class="slide">🤖 مساعد ذكي يعمل بدون إنترنت</div>
+</div>
+
+<div class="screen hide" id="s3">
+  <div class="slide">👨‍👩‍👦 يدعم الرقابة الأبوية لحماية الأطفال</div>
+</div>
+
+<div class="screen hide" id="s4">
+  <div class="slide">🎤 ميزة الصوت باشتراك شهري</div>
+</div>
+
+<div class="screen hide" id="s5">
   <div class="slide">
-    🌐 Works Offline & Online  
-    <button onclick="next(3)">Next</button>
+    Designed by Mohamed Khaled<br>
+    16 years old student – Egypt
   </div>
 </div>
 
-<!-- SCREEN 3: Feature 2 -->
-<div class="screen hidden" id="s3">
-  <div class="slide">
-    📅 Organize your schedule  
-    <button onclick="next(4)">Next</button>
-  </div>
-</div>
-
-<!-- SCREEN 4: Feature 3 -->
-<div class="screen hidden" id="s4">
-  <div class="slide">
-    👨‍👩‍👦 Parental control  
-    <button onclick="next(5)">Next</button>
-  </div>
-</div>
-
-<!-- SCREEN 5: Feature 4 -->
-<div class="screen hidden" id="s5">
-  <div class="slide">
-    🎤 Voice feature (Premium)  
-    <button onclick="next(6)">Next</button>
-  </div>
-</div>
-
-<!-- SCREEN 6: Offline Info + Designer -->
-<div class="screen hidden" id="s6">
-  <div class="slide">
-    🚫 Works offline with limited features  
-    <br><br>
-    👨‍💻 Designed by Mohamed Khaled, 16 y.o, Grade 9, Egypt  
-    <button onclick="next(7)">Next</button>
-  </div>
-</div>
-
-<!-- SCREEN 7: Choose Language -->
-<div class="screen hidden" id="s7">
-  <div class="slide">
-    🌍 Choose Language:  
-    <button onclick="setLang('en')">English</button>
-    <button onclick="setLang('ar')">Arabic</button>
-  </div>
-</div>
-
-<!-- SCREEN 8: Parental Control Guide -->
-<div class="screen hidden" id="s8">
-  <div class="slide">
-    👨‍👩‍👦 How to enable Parental Control?  
-    <p>Go to Settings → Enable Parental Control → Set PIN</p>
-    <button onclick="next(9)">Next</button>
-  </div>
-</div>
-
-<!-- SCREEN 9: Voice Feature Guide -->
-<div class="screen hidden" id="s9">
-  <div class="slide">
-    🎤 Voice Feature: Premium  
-    <p>Press the microphone button to activate voice commands. Subscription required.</p>
-    <button onclick="next(10)">Next</button>
-  </div>
-</div>
-
-<!-- SCREEN 10: Chat -->
-<div class="screen hidden" id="s10">
-  <div class="slide">
-    💬 Ask me anything:
-    <div id="chatContainer">
-      <div id="chatBox"></div>
-      <input type="text" id="chatInput" placeholder="اكتب سؤالك...">
-      <button id="sendBtn" onclick="sendMessage()">Send</button>
-      <button id="micBtn" onclick="playMic()">🎤</button>
+<div class="screen hide" id="s6">
+  <div class="chat">
+    <div class="messages" id="msgs"></div>
+    <div class="inputBox">
+      <button onclick="mic()">🎤</button>
+      <input id="q" placeholder="Type your question…">
+      <button onclick="send()">➤</button>
     </div>
   </div>
 </div>
 
-<audio id="clickSound" src="https://freesound.org/data/previews/256/256113_3263906-lq.mp3"></audio>
-<audio id="micSound" src="https://freesound.org/data/previews/341/341695_3248244-lq.mp3"></audio>
-
 <script>
-// Splash auto move
-setTimeout(()=>{
-  document.getElementById("s1").classList.add("hidden");
-  document.getElementById("s2").classList.remove("hidden");
-},5000);
+/* Auto screens */
+let screens=["s1","s2","s3","s4","s5","s6"];
+let i=0;
+setInterval(()=>{
+  if(i<screens.length-1){
+    document.getElementById(screens[i]).classList.add("hide");
+    i++;
+    document.getElementById(screens[i]).classList.remove("hide");
+  }
+},4000);
 
-// Navigate screens
-function next(n){
-  document.querySelectorAll(".screen").forEach(s=>s.classList.add("hidden"));
-  document.getElementById("s"+n).classList.remove("hidden");
-  document.getElementById("clickSound").play();
-}
+/* Replies */
+const replies={
+  "السلام عليكم":"وعليكم السلام ورحمة الله 🌸",
+  "اهلا":"أهلاً بيك 👋",
+  "مرحبا":"منور 😊",
+  "hello":"Hello! How can I help you?",
+  "hi":"Hi 👋",
 
-// Language selection
-function setLang(lang){
-  alert("Language set to: " + (lang=='en' ? 'English' : 'Arabic'));
-  next(8);
-}
+  "ما مميزاتك":"أنا Super AI، أعمل بدون إنترنت، بدعم الطلاب، وعندي رقابة أبوية وميزة صوت",
+  "بتعمل ايه":"بجاوب على أسئلة تعليمية ومعلومات عامة",
 
-// Chat responses
-const responses = {
-  // الترحيب والتحية
-  "مرحبا":"أهلا وسهلا! كيف يمكنني مساعدتك اليوم؟",
-  "السلام عليكم":"وعليكم السلام! كيف حالك؟",
-  "Hello":"Hi! How can I help you today?",
-  "Hi":"Hello! How can I help you?",
+  "الصف الثالث الاعدادي":"سنة مهمة وفيها امتحانات نهائية",
+  "المرحلة الابتدائية":"أساس التعليم",
+  "المرحلة الثانوية":"بتحدد مستقبلك الجامعي",
 
-  // مميزات البرنامج
-  "ما مميزاتك؟":"أنا Super AI، أساعدك بدون إنترنت، أقدم رقابة أبوية، وأعرض جدولك اليومي.",
-  "What are your features?":"I am Super AI, I work offline, provide parental control, and show schedules.",
+  "ما هي مصر":"مصر دولة عربية في شمال أفريقيا",
+  "عاصمة مصر":"القاهرة",
 
-  // المصمم
-  "من صنعك؟":"تم تصميمي بواسطة محمد خالد، طالب في الصف الثالث الإعدادي، 16 سنة، مصر.",
-  "Who made you?":"Designed by Mohamed Khaled, 16 y.o, Grade 9, Egypt.",
+  "ميزة الصوت":"ميزة تخليك تتكلم بدل ما تكتب (مدفوعة)",
+  "الرقابة الابوية":"ميزة تحمي الأطفال",
 
-  // مراحل الدراسة
-  "ما هي مراحل الدراسة؟":"المرحلة الابتدائية، الإعدادية، الثانوية، ثم التعليم الجامعي.",
-  "What are the school stages?":"Primary, Preparatory, Secondary, then University.",
+  "من صنعك":"تم تصميمي بواسطة محمد خالد",
+  "who made you":"Designed by Mohamed Khaled, 16 years old student",
 
-  // معلومات عامة
-  "ماذا يمكنني أن أفعل هنا؟":"يمكنك التعرف على المميزات، تفعيل الرقابة الأبوية، واستخدام ميزة الصوت عند توفرها.",
-  "What can I do here?":"You can see features, enable parental control, and use the voice feature when available.",
-
-  // الرقابة الأبوية
-  "ماذا تعني الرقابة الأبوية؟":"الرقابة الأبوية تتيح لولي الأمر التحكم في محتوى البرنامج ومتابعة استخدام الأطفال.",
-  "What is parental control?":"Parental control lets guardians manage content and monitor usage.",
-
-  // ميزة الصوت
-  "كيف أفعل ميزة الصوت؟":"ميزة الصوت تعمل عند الاشتراك المدفوع، اضغط زر الميكروفون لتفعيلها.",
-  "How to use voice feature?":"Voice feature works with premium subscription. Press the mic button."
+  "default":"الإجابة غير متوفرة حالياً"
 };
 
-function sendMessage(){
-  const input = document.getElementById("chatInput").value.trim();
-  const box = document.getElementById("chatBox");
-  let reply = responses[input] || "الإجابة غير متوفرة الآن، تحتاج إلى الإنترنت.";
-  box.innerHTML += "<b>أنت:</b> "+input+"<br><b>Super AI:</b> "+reply+"<br><br>";
-  document.getElementById("chatInput").value="";
-  box.scrollTop = box.scrollHeight;
-  document.getElementById("clickSound").play();
+function send(){
+ let q=document.getElementById("q").value.trim();
+ if(!q) return;
+ let box=document.getElementById("msgs");
+ let r=replies[q]||replies["default"];
+ box.innerHTML+=`<div>🧑 ${q}</div><div>🤖 ${r}</div><br>`;
+ document.getElementById("q").value="";
+ box.scrollTop=box.scrollHeight;
 }
 
-// Microphone sound
-function playMic(){
-  document.getElementById("micSound").play();
+function mic(){
+ alert("Voice feature requires subscription");
 }
-
 </script>
 </body>
 </html>
