@@ -4,131 +4,183 @@
 <meta charset="UTF-8">
 <title>Super AI</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
-body{background:black;color:white;overflow:hidden}
+body {
+  margin:0;
+  font-family: Arial, sans-serif;
+  background: radial-gradient(circle, #000 60%, #020b1f);
+  color:white;
+  overflow:hidden;
+}
+.page {
+  position:absolute;
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  opacity:0;
+  transition:1s;
+}
+.page.active {opacity:1;}
 
-/* خلفية ضباب + برق */
-.fog{position:fixed;inset:0;background:radial-gradient(circle,rgba(255,255,255,.08),black 70%);animation:fog 6s infinite}
-@keyframes fog{0%{opacity:.3}50%{opacity:.6}100%{opacity:.3}}
-.lightning{position:fixed;inset:0;background:linear-gradient(120deg,transparent 45%,rgba(0,150,255,.7),transparent 55%);animation:flash 5s infinite}
-@keyframes flash{0%,92%,100%{opacity:0}95%{opacity:1}}
+.logo {
+  width:180px;
+  height:180px;
+  border-radius:50%;
+  background:linear-gradient(145deg,#0055ff,#001133);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:60px;
+  font-weight:bold;
+  animation:scaleUp 3s forwards;
+  box-shadow:0 0 40px red;
+}
+.logo span:nth-child(1){color:#00f;}
+.logo span:nth-child(2){color:red;}
 
-/* الشاشات */
-.screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:1s}
-.hide{opacity:0;pointer-events:none}
+@keyframes scaleUp {
+  from{transform:scale(0.2);}
+  to{transform:scale(1);}
+}
 
-/* اللوجو */
-.logo{width:120px;height:140px;background:#0055ff;
-clip-path:polygon(50% 0%,100% 20%,85% 100%,15% 100%,0% 20%);
-display:flex;align-items:center;justify-content:center;
-font-size:40px;font-weight:bold;box-shadow:0 0 40px #00aaff;
-animation:grow 3s forwards}
-@keyframes grow{from{transform:scale(.2)}to{transform:scale(1.4)}}
-.fire{position:absolute;bottom:-10px;width:100%;height:40%;
-background:radial-gradient(circle at bottom,orange,transparent)}
-.title{margin-top:50px;font-size:30px;opacity:0;animation:show 1s forwards 3s}
-@keyframes show{to{opacity:1}}
+.fire {
+  position:absolute;
+  width:100%;
+  height:100%;
+  background:url("https://i.imgur.com/8KZQZQG.gif") center/cover;
+  opacity:0.25;
+  pointer-events:none;
+}
 
-/* الشرائح */
-.slide{text-align:center;font-size:22px;padding:20px}
-
-/* الدردشة */
-.chat{position:fixed;inset:0;display:flex;flex-direction:column}
-.messages{flex:1;overflow:auto;padding:10px}
-.user{text-align:right;color:#00aaff;margin:6px}
-.bot{text-align:left;margin:6px}
-
-/* الإدخال */
-.input{display:flex;align-items:center;background:#111;padding:8px;border-radius:25px;margin:10px}
-.input input{flex:1;background:none;border:none;color:white;outline:none}
-.input button{background:none;border:none;color:#00aaff;font-size:18px;cursor:pointer}
+.chat {
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+}
+.messages {
+  flex:1;
+  padding:10px;
+  overflow-y:auto;
+}
+.msg {
+  max-width:70%;
+  margin:8px;
+  padding:10px;
+  border-radius:10px;
+}
+.user {
+  background:#0055ff;
+  margin-left:auto;
+}
+.bot {
+  background:#222;
+  margin-right:auto;
+}
+.input {
+  display:flex;
+  padding:10px;
+}
+input {
+  flex:1;
+  padding:10px;
+  font-size:16px;
+  border-radius:20px;
+  border:none;
+}
+button {
+  margin-left:5px;
+  border:none;
+  border-radius:50%;
+  width:45px;
+  height:45px;
+  background:#0055ff;
+  color:white;
+  font-size:18px;
+}
 </style>
 </head>
 
 <body>
 
-<div class="fog"></div>
-<div class="lightning"></div>
+<div class="fire"></div>
 
-<!-- الشاشات -->
-<div class="screen" id="s1">
-  <div style="position:relative">
-    <div class="logo">SA<div class="fire"></div></div>
-    <div class="title">SUPER AI</div>
-  </div>
+<div class="page active" id="p1">
+  <div class="logo"><span>S</span><span>A</span></div>
+  <h2>Super AI</h2>
 </div>
 
-<div class="screen hide" id="s2"><div class="slide">🤖 يعمل بدون إنترنت</div></div>
-<div class="screen hide" id="s3"><div class="slide">👨‍👩‍👦 رقابة أبوية</div></div>
-<div class="screen hide" id="s4"><div class="slide">🎤 ميزة الصوت باشتراك</div></div>
-<div class="screen hide" id="s5"><div class="slide">Designed by Mohamed Khaled<br>16 Years Old Student</div></div>
-
-<div class="screen hide" id="s6">
-  <div class="slide">
-    اختر اللغة<br><br>
-    <button onclick="start('ar')">عربي</button>
-    <button onclick="start('en')">English</button>
-  </div>
+<div class="page" id="p2">
+  <h2>🚀 مميزات Super AI</h2>
+  <p>ذكاء دردشة – تنظيم مواعيد – تعليم – رقابة أبوية</p>
 </div>
 
-<!-- الدردشة -->
-<div class="screen hide" id="chat">
+<div class="page" id="p3">
+  <h2>🎤 ميزة الصوت</h2>
+  <p>أوامر صوتية (قيد التطوير – النسخة الكاملة قريبًا)</p>
+</div>
+
+<div class="page" id="p4">
+  <h2>👨‍👩‍👦 الرقابة الأبوية</h2>
+  <p>تنظيم وقت الاستخدام – متابعة تعليمية (شرح تجريبي)</p>
+</div>
+
+<div class="page" id="p5">
+  <h2>🌍 اختر لغتك</h2>
+  <p>Arabic – English – Italian</p>
+</div>
+
+<div class="page" id="p6">
   <div class="chat">
     <div class="messages" id="msgs"></div>
     <div class="input">
-      <button onclick="voice()">🎤</button>
-      <input id="q" placeholder="اكتب سؤالك">
+      <input id="text" placeholder="اكتب رسالتك..." />
       <button onclick="send()">➤</button>
     </div>
   </div>
 </div>
 
 <script>
-let screens=["s1","s2","s3","s4","s5","s6"];
+let pages=document.querySelectorAll(".page");
 let i=0;
 setInterval(()=>{
- if(i<screens.length-1){
-  document.getElementById(screens[i]).classList.add("hide");
+ if(i<pages.length-1){
+  pages[i].classList.remove("active");
   i++;
-  document.getElementById(screens[i]).classList.remove("hide");
+  pages[i].classList.add("active");
  }
-},4000);
+},3000);
 
-let lang="ar";
-function start(l){
- lang=l;
- document.getElementById("s6").classList.add("hide");
- document.getElementById("chat").classList.remove("hide");
-}
-
-const replies={
- "السلام عليكم":"وعليكم السلام ورحمة الله 🌸",
- "اهلا":"أهلاً بيك 👋",
- "مرحبا":"منور 😊",
- "ما مميزاتك":"أنا Super AI أعمل بدون إنترنت + رقابة أبوية + ميزة صوت",
- "مين صنعك":"تم تصميمي بواسطة محمد خالد",
- "who made you":"Designed by Mohamed Khaled",
- "هل تعمل بدون نت":"نعم أعمل بدون إنترنت",
- "default":"الإجابة غير متوفرة حالياً"
-};
+const replies=[
+ {k:["اهلا","سلام"],v:"أهلاً بيك 👋 أنا Super AI"},
+ {k:["مين صممك","مين عملك"],v:"I was designed by Mohamed Khaled, 16 years old, Egyptian student at Abdel Halim Preparatory School."},
+ {k:["مميزاتك"],v:"دردشة ذكية – تعليم – تنظيم – نسخة تجريبية"},
+ {k:["ثانوية","اعدادي","ابتدائي"],v:"أقدر أساعدك في كل المراحل التعليمية"},
+];
 
 function send(){
- let q=document.getElementById("q").value.trim();
- if(!q)return;
- let r=replies[q]||replies.default;
- msgs.innerHTML+=`<div class='user'>${q}</div><div class='bot'>${r}</div>`;
- document.getElementById("q").value="";
- msgs.scrollTop=msgs.scrollHeight;
+ let t=document.getElementById("text");
+ if(!t.value)return;
+ add("user",t.value);
+ let r="دي نسخة تجريبية، الرد الكامل قريب.";
+ for(let x of replies){
+  if(x.k.some(k=>t.value.includes(k))) r=x.v;
+ }
+ setTimeout(()=>add("bot",r),500);
+ t.value="";
 }
 
-function voice(){
- alert("ميزة الصوت باشتراك");
+function add(c,txt){
+ let d=document.createElement("div");
+ d.className="msg "+c;
+ d.innerText=txt;
+ document.getElementById("msgs").appendChild(d);
 }
-
-document.getElementById("q").addEventListener("keydown",e=>{
- if(e.key==="Enter"){e.preventDefault();send();}
+document.getElementById("text").addEventListener("keydown",e=>{
+ if(e.key==="Enter")send();
 });
 </script>
 
