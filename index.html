@@ -14,36 +14,45 @@ body{
   overflow:hidden;
 }
 
-/* ضباب */
-body::before{
-  content:"";
+/* ضباب حقيقي */
+.fog{
   position:fixed;
   inset:0;
   background:url("https://i.imgur.com/7b1GQkM.png");
   opacity:.25;
-  animation:fog 30s linear infinite;
+  animation:fogMove 40s linear infinite;
+  pointer-events:none;
 }
-@keyframes fog{
+@keyframes fogMove{
   from{background-position:0 0}
-  to{background-position:1000px 0}
+  to{background-position:1200px 0}
 }
 
 /* برق */
 .lightning{
   position:fixed;
   inset:0;
-  background:white;
+  background:#fff;
   opacity:0;
-  animation:flash 8s infinite;
+  animation:light 7s infinite;
   pointer-events:none;
 }
-@keyframes flash{
-  0%,95%,100%{opacity:0}
-  96%{opacity:.7}
-  97%{opacity:0}
+@keyframes light{
+  0%,96%,100%{opacity:0}
+  97%{opacity:.8}
+  98%{opacity:0}
 }
 
-/* صفحات */
+/* نار */
+.fire{
+  position:fixed;
+  inset:0;
+  background:url("https://i.imgur.com/8KZQZQG.gif") center/cover;
+  opacity:.35;
+  pointer-events:none;
+}
+
+/* الصفحات */
 .page{
   position:absolute;
   inset:0;
@@ -52,53 +61,64 @@ body::before{
   justify-content:center;
   flex-direction:column;
   opacity:0;
-  transition:1s;
+  transition:1.2s;
 }
 .page.active{opacity:1}
 
 /* اللوجو */
 .logo{
-  width:180px;
-  height:180px;
+  width:200px;
+  height:200px;
   border-radius:50%;
-  background:#0033ff;
+  background:#05055a;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:64px;
+  font-size:70px;
   font-weight:bold;
-  animation:zoom 3s forwards;
-  box-shadow:0 0 40px red;
+  animation:logoZoom 3s forwards;
+  box-shadow:0 0 50px red;
 }
-.logo span:first-child{color:#00f}
-.logo span:last-child{color:red}
-@keyframes zoom{
+.logo span:first-child{
+  color:#9b00ff;
+  margin-right:-15px;
+}
+.logo span:last-child{
+  color:#0077ff;
+  text-shadow:0 0 15px red;
+}
+@keyframes logoZoom{
   from{transform:scale(.2)}
   to{transform:scale(1)}
 }
 
-/* نار */
-.fire{
-  position:absolute;
-  inset:0;
-  background:url("https://i.imgur.com/8KZQZQG.gif") center/cover;
-  opacity:.3;
-  pointer-events:none;
+/* الشات */
+.chat{
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction:column;
 }
-
-/* شات */
-.chat{width:100%;height:100%;display:flex;flex-direction:column}
-.messages{flex:1;padding:15px;overflow-y:auto}
+.messages{
+  flex:1;
+  padding:15px;
+  overflow-y:auto;
+}
 .msg{
   max-width:70%;
-  padding:10px;
-  margin:8px;
-  border-radius:10px;
-  font-size:16px;
+  padding:12px;
+  margin:10px;
+  border-radius:12px;
+  font-size:17px;
 }
-.user{background:#0055ff;margin-left:auto}
-.bot{background:#222;margin-right:auto}
-
+.user{
+  background:#0066ff;
+  margin-left:auto;
+}
+.bot{
+  background:#222;
+  margin-right:auto;
+}
 .input{
   display:flex;
   padding:10px;
@@ -116,7 +136,7 @@ button{
   margin-left:6px;
   border:none;
   border-radius:50%;
-  background:#0055ff;
+  background:#0066ff;
   color:white;
   font-size:18px;
 }
@@ -125,36 +145,21 @@ button{
 
 <body>
 
+<div class="fog"></div>
 <div class="fire"></div>
 <div class="lightning"></div>
 
-<!-- الصفحات -->
-<div class="page active" id="p1">
+<div class="page active">
   <div class="logo"><span>S</span><span>A</span></div>
   <h2>Super AI</h2>
 </div>
 
-<div class="page" id="p2">
-  <h2>🔥 مميزات Super AI</h2>
-  <p>دردشة ذكية – تعليم – تنظيم – رقابة أبوية</p>
-</div>
+<div class="page"><h2>🔥 مميزات Super AI</h2><p>ذكاء دردشة – تعليم – تنظيم – نسخة تجريبية احترافية</p></div>
+<div class="page"><h2>🎤 ميزة الصوت</h2><p>أوامر صوتية – قيد التطوير</p></div>
+<div class="page"><h2>👨‍👩‍👦 الرقابة الأبوية</h2><p>تنظيم الوقت – متابعة تعليمية</p></div>
+<div class="page"><h2>🌍 اختر اللغة</h2><p>Arabic – English – Italian</p></div>
 
-<div class="page" id="p3">
-  <h2>🎤 ميزة الصوت</h2>
-  <p>أوامر صوتية – (قيد التطوير)</p>
-</div>
-
-<div class="page" id="p4">
-  <h2>👨‍👩‍👦 الرقابة الأبوية</h2>
-  <p>تنظيم وقت – متابعة تعليمية</p>
-</div>
-
-<div class="page" id="p5">
-  <h2>🌍 اختر اللغة</h2>
-  <p>Arabic – English – Italian</p>
-</div>
-
-<div class="page" id="p6">
+<div class="page">
   <div class="chat">
     <div class="messages" id="msgs"></div>
     <div class="input">
@@ -165,7 +170,6 @@ button{
 </div>
 
 <script>
-/* انتقال الصفحات */
 let pages=document.querySelectorAll(".page");
 let i=0;
 setInterval(()=>{
@@ -174,20 +178,20 @@ setInterval(()=>{
   i++;
   pages[i].classList.add("active");
  }
-},3000);
+},3500);
 
-/* ردود */
 const replies=[
- {k:["مين صممك","مين عملك"],v:"I was designed by Mohamed Khaled, 16 years old, Egyptian student at Abdel Halim Preparatory School."},
- {k:["مميزاتك"],v:"أنا Super AI: دردشة، تعليم، تنظيم، ونسخة تجريبية من تطبيق أكبر قادم قريبًا."},
- {k:["اهلا","السلام","hi"],v:"أهلاً بيك 👋 إزيك؟"},
+ {k:["مين صممك","مين عملك"],v:"Designed by Mohamed Khaled, 16 years old, Egyptian student at Abdel Halim Preparatory School."},
+ {k:["مميزاتك"],v:"أنا Super AI، أقدر أساعدك في التعليم، التنظيم، والدردشة الذكية."},
+ {k:["اهلا","السلام","hi"],v:"أهلاً بيك 👋 نورت Super AI"},
+ {k:["اعدادي","ثانوي","ابتدائي"],v:"أقدر أساعدك في كل المراحل الدراسية بشرح ومعلومات عامة."}
 ];
 
 function send(){
  let t=document.getElementById("text");
  if(!t.value)return;
  add("user",t.value);
- let r="دي نسخة تجريبية، والنسخة الكاملة قريبًا.";
+ let r="سؤال جميل 👍 ممكن توضحه أكتر؟";
  for(let x of replies){
   if(x.k.some(k=>t.value.includes(k))) r=x.v;
  }
@@ -201,7 +205,6 @@ function add(c,txt){
  d.innerText=txt;
  document.getElementById("msgs").appendChild(d);
 }
-
 document.getElementById("text").addEventListener("keydown",e=>{
  if(e.key==="Enter")send();
 });
