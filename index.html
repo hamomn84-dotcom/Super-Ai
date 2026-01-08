@@ -6,96 +6,82 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-html,body{
+*{box-sizing:border-box}
+body{
   margin:0;
-  width:100%;
-  height:100%;
   background:#000;
-  overflow:hidden;
-  font-family:Arial, sans-serif;
   color:#fff;
+  font-family:Arial;
+  overflow:hidden;
 }
 
-/* ضباب */
+/* مؤثرات */
+.fog,.fire,.lightning{
+  position:fixed; inset:0; pointer-events:none;
+}
 .fog{
-  position:fixed;
-  inset:0;
-  background:radial-gradient(circle at 30% 30%, rgba(255,255,255,0.08), transparent 40%),
-             radial-gradient(circle at 70% 60%, rgba(255,255,255,0.06), transparent 45%);
-  animation:fogMove 20s linear infinite;
+  background:radial-gradient(circle at 30% 40%,rgba(255,255,255,.06),transparent 50%);
+  animation:fog 20s linear infinite;
 }
-@keyframes fogMove{
-  0%{transform:translateX(0)}
-  100%{transform:translateX(-200px)}
-}
-
-/* برق */
-.lightning{
-  position:fixed;
-  inset:0;
-  background:#fff;
-  opacity:0;
-  animation:light 6s infinite;
-}
-@keyframes light{
-  0%,94%,100%{opacity:0}
-  95%{opacity:.8}
-  96%{opacity:0}
-}
-
-/* نار */
+@keyframes fog{from{transform:translateX(0)}to{transform:translateX(-200px)}}
 .fire{
-  position:fixed;
-  bottom:-40%;
-  left:-50%;
-  width:200%;
-  height:200%;
-  background:radial-gradient(circle, rgba(255,80,0,.35), transparent 60%);
-  animation:fireMove 3s infinite alternate;
+  background:radial-gradient(circle at bottom,rgba(255,80,0,.4),transparent 60%);
+  animation:fire 3s infinite alternate;
 }
-@keyframes fireMove{
-  from{transform:translateY(0)}
-  to{transform:translateY(-60px)}
+@keyframes fire{to{transform:translateY(-60px)}}
+.lightning{
+  background:#fff; opacity:0; animation:light 6s infinite;
 }
+@keyframes light{95%{opacity:.9}96%{opacity:0}}
 
-/* شاشة البداية */
+/* الشاشات */
 .screen{
-  position:absolute;
-  inset:0;
-  display:flex;
-  flex-direction:column;
+  position:absolute; inset:0;
+  display:none;
   align-items:center;
   justify-content:center;
+  flex-direction:column;
 }
+.show{display:flex}
 
 /* اللوجو */
 .logo{
-  width:180px;
-  height:180px;
-  border-radius:50%;
-  background:#0a0a3a;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:70px;
-  font-weight:bold;
+  width:180px;height:180px;border-radius:50%;
+  background:#111;
+  display:flex;align-items:center;justify-content:center;
+  font-size:70px;font-weight:bold;
   box-shadow:0 0 40px red;
   animation:zoom 3s forwards;
 }
-.logo span:first-child{
-  color:#a400ff;
-  margin-right:-18px;
-}
-.logo span:last-child{
-  color:#0077ff;
-  text-shadow:0 0 15px red;
-}
-@keyframes zoom{
-  from{transform:scale(.2)}
-  to{transform:scale(1)}
-}
+.logo span:first-child{color:#a400ff;margin-right:-18px}
+.logo span:last-child{color:#0077ff;text-shadow:0 0 15px red}
+@keyframes zoom{from{transform:scale(.2)}to{transform:scale(1)}}
 
-h1{margin-top:20px}
+/* دردشة */
+.chat{
+  width:100%;height:100%;
+  display:flex;flex-direction:column;
+}
+.messages{
+  flex:1;padding:15px;overflow-y:auto;
+}
+.msg{
+  max-width:70%;margin:10px;padding:12px;border-radius:15px;
+  font-size:18px;
+}
+.user{background:#222;margin-left:auto}
+.bot{background:#0a2a5a;margin-right:auto}
+.input{
+  display:flex;padding:10px;background:#111;
+}
+.input input{
+  flex:1;padding:12px;font-size:18px;
+  background:#000;color:#fff;border:1px solid #333;
+}
+.input button{
+  background:#111;color:#fff;border:none;
+  font-size:22px;padding:10px 14px;cursor:pointer;
+}
 </style>
 </head>
 
@@ -105,12 +91,87 @@ h1{margin-top:20px}
 <div class="fire"></div>
 <div class="lightning"></div>
 
-<div class="screen">
-  <div class="logo">
-    <span>S</span><span>A</span>
-  </div>
+<!-- شاشة البداية -->
+<div class="screen show" id="splash">
+  <div class="logo"><span>S</span><span>A</span></div>
   <h1>Super AI</h1>
 </div>
+
+<!-- شاشة المميزات -->
+<div class="screen" id="features">
+  <h2>✨ مميزات Super AI</h2>
+  <p>• ذكاء اصطناعي ذكي وسريع</p>
+  <p>• دردشة طبيعية</p>
+  <p>• يعمل بدون إنترنت (قريبًا)</p>
+</div>
+
+<!-- شاشة اللغة -->
+<div class="screen" id="lang">
+  <h2>🌍 اختر اللغة</h2>
+  <p>العربية ✅</p>
+  <p>English (قريبًا)</p>
+</div>
+
+<!-- شاشة الصوت -->
+<div class="screen" id="voice">
+  <h2>🎤 ميزة الصوت</h2>
+  <p>تخليك تتكلم مع Super AI بصوتك بدل الكتابة</p>
+  <p>الميزة قيد التطوير</p>
+</div>
+
+<!-- الرقابة الأبوية -->
+<div class="screen" id="parent">
+  <h2>🛡️ الرقابة الأبوية</h2>
+  <p>• حماية الأطفال</p>
+  <p>• فلترة المحتوى</p>
+  <p>• تحكم كامل لولي الأمر</p>
+</div>
+
+<!-- الدردشة -->
+<div class="screen" id="chat">
+  <div class="chat">
+    <div class="messages" id="messages"></div>
+    <div class="input">
+      <button>😊</button>
+      <button>🎤</button>
+      <input id="text" placeholder="اكتب رسالتك..." />
+      <button onclick="send()">➤</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let screens=["splash","features","lang","voice","parent","chat"];
+let i=0;
+setInterval(()=>{
+  if(i<screens.length-1){
+    document.getElementById(screens[i]).classList.remove("show");
+    i++;
+    document.getElementById(screens[i]).classList.add("show");
+  }
+},3000);
+
+function send(){
+  let t=document.getElementById("text");
+  if(!t.value)return;
+  add(t.value,"user");
+  let r="أنا Super AI 🤖";
+  if(t.value.includes("مين")&&t.value.includes("صمم"))
+    r="تم تصميمي بواسطة Mohamed Khaled – Egypt 🇪🇬";
+  setTimeout(()=>add(r,"bot"),500);
+  t.value="";
+}
+function add(txt,cls){
+  let m=document.createElement("div");
+  m.className="msg "+cls;
+  m.innerText=txt;
+  messages.appendChild(m);
+  messages.scrollTop=99999;
+}
+document.getElementById("text").addEventListener("keydown",e=>{
+  if(e.key==="Enter")send();
+});
+</script>
 
 </body>
 </html>
