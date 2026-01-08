@@ -6,172 +6,214 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-*{box-sizing:border-box}
+*{box-sizing:border-box;font-family:Arial}
 body{
   margin:0;
-  background:#000;
-  color:#fff;
-  font-family:Arial;
+  background:black;
+  color:white;
   overflow:hidden;
 }
 
-/* مؤثرات */
-.fog,.fire,.lightning{
-  position:fixed; inset:0; pointer-events:none;
-}
+/* خلفية */
 .fog{
-  background:radial-gradient(circle at 30% 40%,rgba(255,255,255,.06),transparent 50%);
-  animation:fog 20s linear infinite;
+  position:fixed;
+  inset:0;
+  background:radial-gradient(circle at 20% 30%,rgba(200,200,200,.07),transparent 40%),
+             radial-gradient(circle at 80% 70%,rgba(200,200,200,.06),transparent 40%);
+  animation:fogMove 20s infinite linear;
 }
-@keyframes fog{from{transform:translateX(0)}to{transform:translateX(-200px)}}
-.fire{
-  background:radial-gradient(circle at bottom,rgba(255,80,0,.4),transparent 60%);
-  animation:fire 3s infinite alternate;
+@keyframes fogMove{
+  from{background-position:0 0,0 0}
+  to{background-position:200px 100px,-200px -100px}
 }
-@keyframes fire{to{transform:translateY(-60px)}}
-.lightning{
-  background:#fff; opacity:0; animation:light 6s infinite;
-}
-@keyframes light{95%{opacity:.9}96%{opacity:0}}
 
-/* الشاشات */
-.screen{
-  position:absolute; inset:0;
-  display:none;
+/* برق */
+.lightning{
+  position:fixed;
+  top:50%;
+  left:-100px;
+  width:80px;
+  height:6px;
+  background:linear-gradient(90deg,transparent,#00aaff,transparent);
+  animation:bolt 1.5s infinite;
+}
+@keyframes bolt{
+  0%,90%{opacity:0}
+  92%{opacity:1;transform:translateX(120vw)}
+  100%{opacity:0}
+}
+
+/* شاشة البداية */
+#intro{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
   align-items:center;
   justify-content:center;
+}
+.logo{
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  background:radial-gradient(circle,#ff0000,#7b00ff,#0044ff);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:48px;
+  font-weight:bold;
+  animation:grow 3s forwards;
+}
+@keyframes grow{
+  from{transform:scale(.3)}
+  to{transform:scale(1.3)}
+}
+.fire{
+  position:absolute;
+  width:160px;
+  height:160px;
+  border-radius:50%;
+  box-shadow:0 0 40px 15px red;
+  animation:firePulse 1s infinite alternate;
+}
+@keyframes firePulse{
+  from{opacity:.4}
+  to{opacity:.9}
+}
+
+#intro h1{
+  margin-top:20px;
+  opacity:0;
+  animation:show 1s forwards 3s;
+}
+@keyframes show{to{opacity:1}}
+
+.hidden{display:none}
+
+/* الدردشة */
+#chat{
+  position:absolute;
+  inset:0;
+  display:flex;
   flex-direction:column;
 }
-.show{display:flex}
-
-/* اللوجو */
-.logo{
-  width:180px;height:180px;border-radius:50%;
-  background:#111;
-  display:flex;align-items:center;justify-content:center;
-  font-size:70px;font-weight:bold;
-  box-shadow:0 0 40px red;
-  animation:zoom 3s forwards;
-}
-.logo span:first-child{color:#a400ff;margin-right:-18px}
-.logo span:last-child{color:#0077ff;text-shadow:0 0 15px red}
-@keyframes zoom{from{transform:scale(.2)}to{transform:scale(1)}}
-
-/* دردشة */
-.chat{
-  width:100%;height:100%;
-  display:flex;flex-direction:column;
-}
 .messages{
-  flex:1;padding:15px;overflow-y:auto;
+  flex:1;
+  overflow-y:auto;
+  padding:15px;
 }
 .msg{
-  max-width:70%;margin:10px;padding:12px;border-radius:15px;
+  max-width:70%;
+  padding:10px 14px;
+  margin:8px;
+  border-radius:15px;
   font-size:18px;
 }
-.user{background:#222;margin-left:auto}
-.bot{background:#0a2a5a;margin-right:auto}
-.input{
-  display:flex;padding:10px;background:#111;
+.user{
+  background:#222;
+  align-self:flex-start;
 }
-.input input{
-  flex:1;padding:12px;font-size:18px;
-  background:#000;color:#fff;border:1px solid #333;
+.ai{
+  background:#0055aa;
+  align-self:flex-end;
 }
-.input button{
-  background:#111;color:#fff;border:none;
-  font-size:22px;padding:10px 14px;cursor:pointer;
+
+.inputBox{
+  display:flex;
+  padding:10px;
+}
+.inputBox input{
+  flex:1;
+  font-size:18px;
+  padding:10px;
+  border-radius:20px;
+  border:none;
+  outline:none;
+}
+.inputBox button{
+  margin-left:8px;
+  width:45px;
+  border-radius:50%;
+  border:none;
+  background:#0077ff;
+  color:white;
+  font-size:20px;
 }
 </style>
 </head>
 
 <body>
-
 <div class="fog"></div>
-<div class="fire"></div>
 <div class="lightning"></div>
 
-<!-- شاشة البداية -->
-<div class="screen show" id="splash">
-  <div class="logo"><span>S</span><span>A</span></div>
-  <h1>Super AI</h1>
+<!-- intro -->
+<div id="intro">
+  <div class="fire"></div>
+  <div class="logo">SA</div>
+  <h1>SUPER AI</h1>
 </div>
 
-<!-- شاشة المميزات -->
-<div class="screen" id="features">
-  <h2>✨ مميزات Super AI</h2>
-  <p>• ذكاء اصطناعي ذكي وسريع</p>
-  <p>• دردشة طبيعية</p>
-  <p>• يعمل بدون إنترنت (قريبًا)</p>
-</div>
-
-<!-- شاشة اللغة -->
-<div class="screen" id="lang">
-  <h2>🌍 اختر اللغة</h2>
-  <p>العربية ✅</p>
-  <p>English (قريبًا)</p>
-</div>
-
-<!-- شاشة الصوت -->
-<div class="screen" id="voice">
-  <h2>🎤 ميزة الصوت</h2>
-  <p>تخليك تتكلم مع Super AI بصوتك بدل الكتابة</p>
-  <p>الميزة قيد التطوير</p>
-</div>
-
-<!-- الرقابة الأبوية -->
-<div class="screen" id="parent">
-  <h2>🛡️ الرقابة الأبوية</h2>
-  <p>• حماية الأطفال</p>
-  <p>• فلترة المحتوى</p>
-  <p>• تحكم كامل لولي الأمر</p>
-</div>
-
-<!-- الدردشة -->
-<div class="screen" id="chat">
-  <div class="chat">
-    <div class="messages" id="messages"></div>
-    <div class="input">
-      <button>😊</button>
-      <button>🎤</button>
-      <input id="text" placeholder="اكتب رسالتك..." />
-      <button onclick="send()">➤</button>
-    </div>
+<!-- chat -->
+<div id="chat" class="hidden">
+  <div class="messages" id="msgs"></div>
+  <div class="inputBox">
+    <input id="input" placeholder="اكتب سؤالك...">
+    <button onclick="send()">➤</button>
   </div>
 </div>
 
 <script>
-let screens=["splash","features","lang","voice","parent","chat"];
-let i=0;
-setInterval(()=>{
-  if(i<screens.length-1){
-    document.getElementById(screens[i]).classList.remove("show");
-    i++;
-    document.getElementById(screens[i]).classList.add("show");
-  }
-},3000);
+const intro=document.getElementById("intro");
+const chat=document.getElementById("chat");
+const msgs=document.getElementById("msgs");
+const input=document.getElementById("input");
+
+setTimeout(()=>{
+  intro.classList.add("hidden");
+  chat.classList.remove("hidden");
+  aiMsg("👋 أهلاً بيك! أنا Super AI");
+  aiMsg("✨ المميزات: دردشة – تعليم – دعم صوت – رقابة أبوية");
+},4500);
 
 function send(){
-  let t=document.getElementById("text");
-  if(!t.value)return;
-  add(t.value,"user");
-  let r="أنا Super AI 🤖";
-  if(t.value.includes("مين")&&t.value.includes("صمم"))
-    r="تم تصميمي بواسطة Mohamed Khaled – Egypt 🇪🇬";
-  setTimeout(()=>add(r,"bot"),500);
-  t.value="";
+  if(!input.value.trim())return;
+  userMsg(input.value);
+  reply(input.value);
+  input.value="";
 }
-function add(txt,cls){
-  let m=document.createElement("div");
-  m.className="msg "+cls;
-  m.innerText=txt;
-  messages.appendChild(m);
-  messages.scrollTop=99999;
-}
-document.getElementById("text").addEventListener("keydown",e=>{
+
+input.addEventListener("keydown",e=>{
   if(e.key==="Enter")send();
 });
-</script>
 
+function userMsg(t){
+  let d=document.createElement("div");
+  d.className="msg user";
+  d.textContent=t;
+  msgs.appendChild(d);
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+function aiMsg(t){
+  let d=document.createElement("div");
+  d.className="msg ai";
+  d.textContent=t;
+  msgs.appendChild(d);
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+function reply(q){
+  let l=q.toLowerCase();
+  if(l.includes("مين")&&l.includes("صمم")){
+    aiMsg("Designed by Mohamed Khaled, 16 years old, Third Preparatory Student at Abdel Halim School.");
+    return;
+  }
+  if(l.includes("ابعتها بالعربي")){
+    aiMsg("تمام ✅ هبعتها بالعربي.");
+    return;
+  }
+  aiMsg("🤖 فهمتك! اسألني أي حاجة تعليمية أو عامة.");
+}
+</script>
 </body>
 </html>
