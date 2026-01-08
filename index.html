@@ -1,0 +1,223 @@
+﻿<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>Super AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{box-sizing:border-box;font-family:Arial}
+body{
+margin:0;
+background:black;
+color:white;
+overflow:hidden;
+}
+
+/* خلفية ضباب */
+body::before{
+content:"";
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:radial-gradient(circle at 30% 30%,rgba(255,255,255,0.05),transparent 40%),
+radial-gradient(circle at 70% 70%,rgba(255,255,255,0.05),transparent 40%);
+animation:fog 10s infinite alternate;
+z-index:-1;
+}
+@keyframes fog{
+0%{transform:scale(1)}
+100%{transform:scale(1.2)}
+}
+
+/* شاشة البداية */
+#intro{
+position:fixed;
+inset:0;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+background:black;
+z-index:10;
+}
+
+#logo{
+width:80px;height:80px;
+border-radius:50%;
+background:radial-gradient(circle,red,blue);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:32px;
+font-weight:bold;
+animation:grow 3s forwards;
+box-shadow:0 0 30px red;
+}
+@keyframes grow{
+to{transform:scale(3)}
+}
+
+.fire{
+position:absolute;
+width:120px;height:120px;
+border-radius:50%;
+box-shadow:0 0 40px red;
+animation:fire 0.2s infinite alternate;
+}
+@keyframes fire{
+from{box-shadow:0 0 20px red}
+to{box-shadow:0 0 60px orange}
+}
+
+#app{
+display:none;
+height:100vh;
+display:flex;
+flex-direction:column;
+}
+
+/* الدردشة */
+#chat{
+flex:1;
+overflow-y:auto;
+padding:10px;
+display:flex;
+flex-direction:column;
+}
+
+.msg{
+max-width:70%;
+padding:10px;
+margin:5px;
+border-radius:10px;
+font-size:18px;
+}
+.user{
+align-self:flex-start;
+background:#333;
+}
+.ai{
+align-self:flex-end;
+background:#0055ff;
+}
+
+/* الإدخال */
+#inputBox{
+display:flex;
+padding:10px;
+background:#111;
+}
+#input{
+flex:1;
+padding:10px;
+font-size:18px;
+border:none;
+outline:none;
+}
+button{
+font-size:18px;
+padding:10px;
+background:#0055ff;
+border:none;
+color:white;
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div id="intro">
+<div class="fire"></div>
+<div id="logo">SA</div>
+</div>
+
+<div id="app">
+<div id="chat"></div>
+<div id="inputBox">
+<input id="input" placeholder="اكتب سؤالك..." />
+<button onclick="send()">➤</button>
+</div>
+</div>
+
+<script>
+let lastAnswer="";
+let lastLang="ar";
+
+setTimeout(()=>{
+document.getElementById("intro").style.display="none";
+document.getElementById("app").style.display="flex";
+bot("أهلاً بيك 👋 أنا Super AI، مساعدك الذكي. اسألني أي حاجة.");
+},3500);
+
+function bot(text){
+let d=document.createElement("div");
+d.className="msg ai";
+d.innerText=text;
+chat.appendChild(d);
+chat.scrollTop=chat.scrollHeight;
+lastAnswer=text;
+}
+
+function user(text){
+let d=document.createElement("div");
+d.className="msg user";
+d.innerText=text;
+chat.appendChild(d);
+chat.scrollTop=chat.scrollHeight;
+}
+
+function send(){
+let t=input.value.trim();
+if(!t)return;
+user(t);
+input.value="";
+
+if(/لا بالعربي|بالعربي/i.test(t)){
+bot(translate(lastAnswer,"ar"));
+return;
+}
+if(/english/i.test(t)){
+bot(translate(lastAnswer,"en"));
+return;
+}
+
+reply(t);
+}
+
+input.addEventListener("keydown",e=>{
+if(e.key==="Enter")send();
+});
+
+function reply(q){
+let a="";
+
+if(/مين.*صممك|مين.*عملك/i.test(q)){
+a="أنا تم تصميمي بواسطة محمد، عمري 15 سنة، من مدرسة عبد الحليم في مصر.";
+}
+else if(/دراسات|رياضيات|علوم|عربي/i.test(q)){
+a="أقدر أشرح كل المواد لكل المراحل الدراسية بالتفصيل، من ابتدائي لثانوي.";
+}
+else{
+a="فاهم سؤالك 👍 اسألني أي حاجة تعليمية أو عامة.";
+}
+
+bot(a);
+}
+
+function translate(text,lang){
+if(lang==="ar"){
+return text
+.replace("I was designed","أنا تم تصميمي")
+.replace("years old","سنة")
+.replace("School","مدرسة");
+}
+else{
+return "This is the English version of the last answer.";
+}
+}
+</script>
+
+</body>
+</html>
