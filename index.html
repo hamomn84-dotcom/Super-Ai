@@ -1,0 +1,242 @@
+﻿<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>Super AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{box-sizing:border-box;font-family:Arial}
+body{
+margin:0;
+background:black;
+color:white;
+overflow:hidden;
+}
+
+/* ضباب */
+body::before{
+content:"";
+position:fixed;
+inset:0;
+background:
+radial-gradient(circle at 30% 40%,rgba(255,255,255,0.05),transparent 45%),
+radial-gradient(circle at 70% 60%,rgba(255,255,255,0.05),transparent 45%);
+animation:fog 10s infinite alternate;
+z-index:-1;
+}
+@keyframes fog{to{transform:scale(1.15)}}
+
+/* انتقال */
+.flash{
+position:fixed;
+inset:0;
+background:linear-gradient(120deg,transparent,rgba(0,150,255,.8),transparent);
+animation:flash .4s;
+pointer-events:none;
+z-index:20;
+}
+@keyframes flash{
+from{opacity:0}
+50%{opacity:1}
+to{opacity:0}
+}
+
+/* شاشات */
+.screen{
+position:fixed;
+inset:0;
+display:flex;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+text-align:center;
+padding:20px;
+}
+
+/* اللوجو */
+#logo{
+width:90px;height:90px;
+border-radius:50%;
+background:radial-gradient(circle,red,blue);
+font-size:32px;
+font-weight:bold;
+display:flex;
+align-items:center;
+justify-content:center;
+box-shadow:0 0 40px red;
+animation:grow 3s forwards;
+}
+@keyframes grow{to{transform:scale(3)}}
+
+/* الدردشة */
+#app{
+display:none;
+height:100vh;
+display:flex;
+flex-direction:column;
+}
+
+#chat{
+flex:1;
+overflow-y:auto;
+padding:15px;
+display:flex;
+flex-direction:column;
+}
+
+.msg{
+max-width:70%;
+padding:12px;
+margin:6px;
+border-radius:12px;
+font-size:18px;
+}
+.user{
+align-self:flex-start;
+background:#333;
+}
+.ai{
+align-self:flex-end;
+background:#0055ff;
+}
+
+/* الإدخال */
+#inputBox{
+display:flex;
+padding:10px;
+background:#111;
+border-top:1px solid #333;
+}
+#input{
+flex:1;
+padding:12px;
+font-size:18px;
+border:none;
+outline:none;
+background:#222;
+color:white;
+}
+button{
+font-size:18px;
+padding:12px;
+background:#0055ff;
+border:none;
+color:white;
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div id="intro" class="screen">
+<div id="logo">SA</div>
+</div>
+
+<div id="stage" class="screen" style="display:none"></div>
+
+<div id="app">
+<div id="chat"></div>
+<div id="inputBox">
+<input id="input" placeholder="اكتب سؤالك هنا..." />
+<button onclick="send()">➤</button>
+</div>
+</div>
+
+<script>
+const stage=document.getElementById("stage");
+const intro=document.getElementById("intro");
+const app=document.getElementById("app");
+const chat=document.getElementById("chat");
+const input=document.getElementById("input");
+
+function flash(){
+let f=document.createElement("div");
+f.className="flash";
+document.body.appendChild(f);
+setTimeout(()=>f.remove(),400);
+}
+
+const screens=[
+"🎤 ميزة الصوت\nتقدر تسأل بصوتك (ميزة مدفوعة)",
+"👨‍👩‍👦 الرقابة الأبوية\nتحكم كامل للأهل",
+"⚠️ النسخة التجريبية\n✔️ الدردشة\n✔️ التعليم\n❌ الصوت\n❌ بدون إنترنت",
+"🌍 اختار اللغة\n1️⃣ عربي\n2️⃣ English"
+];
+
+let i=0;
+
+setTimeout(()=>{
+intro.style.display="none";
+stage.style.display="flex";
+nextScreen();
+},3500);
+
+function nextScreen(){
+flash();
+stage.innerText=screens[i];
+i++;
+if(i<screens.length){
+setTimeout(nextScreen,2500);
+}else{
+setTimeout(()=>{
+stage.style.display="none";
+startChat();
+},2500);
+}
+}
+
+function startChat(){
+app.style.display="flex";
+bot("أهلاً بيك 👋\nاسأل عن أي حاجة تعليمية أو عامة.");
+}
+
+function bot(text){
+let d=document.createElement("div");
+d.className="msg ai";
+d.innerText=text;
+chat.appendChild(d);
+chat.scrollTop=chat.scrollHeight;
+}
+
+function userMsg(text){
+let d=document.createElement("div");
+d.className="msg user";
+d.innerText=text;
+chat.appendChild(d);
+chat.scrollTop=chat.scrollHeight;
+}
+
+function send(){
+let t=input.value.trim();
+if(!t)return;
+userMsg(t);
+input.value="";
+reply(t);
+}
+
+input.addEventListener("keydown",e=>{
+if(e.key==="Enter")send();
+});
+
+function reply(q){
+let a="";
+if(/مين.*صممك|مين.*عملك/i.test(q)){
+a="تم تصميمي بواسطة محمد، 15 سنة، مدرسة عبد الحليم – مصر.";
+}
+else if(/english/i.test(q)){
+a="Okay, I will reply in English.";
+}
+else if(/عربي/i.test(q)){
+a="تمام 👍 هكمل بالعربي.";
+}
+else{
+a="فاهمك 👍 اسأل عن أي مادة أو معلومة عامة.";
+}
+bot(a);
+}
+</script>
+
+</body>
+</html>
